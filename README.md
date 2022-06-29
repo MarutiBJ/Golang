@@ -1,2 +1,3 @@
-# Golang
-Golang Repository
+# Readme.md
+
+## Golang Practice Repository
