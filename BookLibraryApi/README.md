@@ -2,5 +2,5 @@
 
 ## Execution Steps
 
-` cd main
-` go run main.go
+- cd main
+- go run main.go
