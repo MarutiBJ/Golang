@@ -6,22 +6,22 @@ import (
 	"fmt"
 	"net/http"
 
-	"basicwebapp/mapstore"
-
 	"github.com/gorilla/mux"
 )
 
-var BL mapstore.BookLibrary
+type BookAPIController struct {
+	BL model.BookController
+}
 
 // Handler Function for default route - Healthcheck
-func Welcome(w http.ResponseWriter, r *http.Request) {
+func (b *BookAPIController) Welcome(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 	response := model.HealthCheck{Data: "Welcome to Book Library Application"}
 	json.NewEncoder(w).Encode(response)
 	w.WriteHeader(http.StatusOK)
 }
 
-func Post(w http.ResponseWriter, r *http.Request) {
+func (b *BookAPIController) Post(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("content-type", "application/json")
 	var book model.Book
 	err := json.NewDecoder(r.Body).Decode(&book)
@@ -31,14 +31,14 @@ func Post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = BL.Add(book)
+	err = b.BL.Add(book)
 	json.NewEncoder(w).Encode(book)
 	w.WriteHeader(http.StatusOK)
 
 }
 
-func GetAll(w http.ResponseWriter, r *http.Request) {
-	books, err := BL.GetBooks()
+func (b *BookAPIController) GetAll(w http.ResponseWriter, r *http.Request) {
+	books, err := b.BL.GetBooks()
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		json.NewEncoder(w).Encode(model.HealthCheck{Data: err.Error()})
@@ -49,9 +49,9 @@ func GetAll(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func Get(w http.ResponseWriter, r *http.Request) {
+func (b *BookAPIController) Get(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["id"]
-	book, err := BL.GetBook(id)
+	book, err := b.BL.GetBook(id)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		json.NewEncoder(w).Encode(model.HealthCheck{Data: err.Error()})
@@ -62,12 +62,12 @@ func Get(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func Put(w http.ResponseWriter, r *http.Request) {
+func (b *BookAPIController) Put(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["id"]
 	fmt.Println("Id:", id)
 	var book model.Book
 	json.NewDecoder(r.Body).Decode(&book)
-	err := BL.Update(id, book)
+	err := b.BL.Update(id, book)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		json.NewEncoder(w).Encode(model.HealthCheck{Data: err.Error()})
@@ -78,9 +78,9 @@ func Put(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func Delete(w http.ResponseWriter, r *http.Request) {
+func (b *BookAPIController) Delete(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["id"]
-	err := BL.Delete(id)
+	err := b.BL.Delete(id)
 	if err != nil {
 		json.NewEncoder(w).Encode(model.HealthCheck{Data: err.Error()})
 		w.WriteHeader(http.StatusNotFound)

@@ -2,18 +2,20 @@ package router
 
 import (
 	"basicwebapp/controller"
+
 	"net/http"
 
 	"github.com/gorilla/mux"
 )
 
-func Bookrouter() *mux.Router {
+func Bookrouter(api *controller.BookAPIController) *mux.Router {
 	mux := mux.NewRouter()
-	mux.Handle("/", http.HandlerFunc(controller.Welcome)).Methods("GET")
-	mux.Handle("/book", http.HandlerFunc(controller.GetAll)).Methods("GET")
-	mux.Handle("/book/{id}", http.HandlerFunc(controller.Get)).Methods("GET")
-	mux.Handle("/book", http.HandlerFunc(controller.Post)).Methods("POST")
-	mux.Handle("/book/{id}", http.HandlerFunc(controller.Put)).Methods("PUT")
-	mux.Handle("/book/{id}", http.HandlerFunc(controller.Delete)).Methods("DELETE")
+
+	mux.Handle("/", http.HandlerFunc(api.Welcome)).Methods("GET")
+	mux.Handle("/book", http.HandlerFunc(api.GetAll)).Methods("GET")
+	mux.Handle("/book/{id}", http.HandlerFunc(api.Get)).Methods("GET")
+	mux.Handle("/book", http.HandlerFunc(api.Post)).Methods("POST")
+	mux.Handle("/book/{id}", http.HandlerFunc(api.Put)).Methods("PUT")
+	mux.Handle("/book/{id}", http.HandlerFunc(api.Delete)).Methods("DELETE")
 	return mux
 }

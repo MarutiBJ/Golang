@@ -17,7 +17,7 @@ func NewBookLibrary() *BookLibrary {
 }
 
 // BookLibrary implements BookController
-func (library *BookLibrary) Add(book model.Book) error {
+func (library BookLibrary) Add(book model.Book) error {
 
 	if _, ok := library.Library[book.Id]; ok {
 		return errors.New("Book Already Exist")

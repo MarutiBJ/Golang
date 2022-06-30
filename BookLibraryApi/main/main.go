@@ -11,14 +11,16 @@ import (
 
 func main() {
 
-	mux := router.Bookrouter()
+	apiController := &controller.BookAPIController{
+		BL: mapstore.NewBookLibrary(),
+	}
+
+	bookMux := router.Bookrouter(apiController)
 
 	server := &http.Server{
 		Addr:    ":8000",
-		Handler: mux,
+		Handler: bookMux,
 	}
-
-	controller.BL = *mapstore.NewBookLibrary()
 
 	log.Print("Webserver started on port ", server.Addr)
 	err := server.ListenAndServe()
